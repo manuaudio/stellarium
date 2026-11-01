@@ -1772,12 +1772,16 @@ std::string convertToExifDms(double decimalDegrees) {
 // Auxiliary function by Claude.ai.
 // Add an XMP ordered array (rdf:Seq) of values
 static void setSeq(Exiv2::XmpData& xmp, const std::string& key,
-                   const std::vector<std::string>& items)
+		   const std::vector<std::string>& items)
 {
-    Exiv2::Value::UniquePtr v = Exiv2::Value::create(Exiv2::xmpSeq);  // 0.28
-    // (in 0.27 use Exiv2::Value::AutoPtr)
-    for (const auto& s : items) v->read(s);   // each read() appends one item
-    xmp.add(Exiv2::XmpKey(key), v.get());
+#if EXIV2_VERSION >= EXIV2_MAKE_VERSION(0, 28, 0)
+	Exiv2::Value::UniquePtr v = Exiv2::Value::create(Exiv2::xmpSeq);
+#else
+	// (in 0.27 use Exiv2::Value::AutoPtr)
+	Exiv2::Value::AutoPtr v = Exiv2::Value::create(Exiv2::xmpSeq);
+#endif
+	for (const auto& s : items) v->read(s);   // each read() appends one item
+	xmp.add(Exiv2::XmpKey(key), v.get());
 }
 #endif
 
@@ -2058,8 +2062,8 @@ void StelMainView::doScreenshot(void)
 
 	try {
 		// Claude.ai suggests 2 lines. XMP creation worked without, but maybe terminate is important?
-		//Exiv2::XmpParser::initialize();           // needed for thread-safety / explicit setup
-		//::atexit(Exiv2::XmpParser::terminate);
+		Exiv2::XmpParser::initialize();           // needed for thread-safety / explicit setup
+		::atexit(Exiv2::XmpParser::terminate);
 
 		StelMovementMgr *movMgr=GETSTELMODULE(StelMovementMgr);
 		StelLocation loc=core->getCurrentLocation();
