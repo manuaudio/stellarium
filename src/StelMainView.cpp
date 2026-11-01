@@ -1014,7 +1014,7 @@ void StelMainView::init()
 	customScreenshotHeight=configuration->value("main/screenshot_custom_height", 768).toInt();
 	screenshotDpi=configuration->value("main/screenshot_dpi", 72).toInt();
 #ifdef HAVE_EXIV2
-	setFlagScreenshotWriteExif(configuration->value("main/screenshot_exif", "").toBool());
+	setFlagScreenshotWriteExif(configuration->value("main/screenshot_exif", true).toBool());
 	setScreenshotArtist(configuration->value("main/screenshot_artist", "").toString());
 	setScreenshotCopyright(configuration->value("main/screenshot_copyright", "").toString());
 	setScreenshotTerms(configuration->value("main/screenshot_terms", "").toString());
