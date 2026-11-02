@@ -1774,12 +1774,7 @@ std::string convertToExifDms(double decimalDegrees) {
 static void setSeq(Exiv2::XmpData& xmp, const std::string& key,
 		   const std::vector<std::string>& items)
 {
-#if EXIV2_VERSION >= EXIV2_MAKE_VERSION(0, 28, 0)
-	Exiv2::Value::UniquePtr v = Exiv2::Value::create(Exiv2::xmpSeq);
-#else
-	// (in 0.27 use Exiv2::Value::AutoPtr)
-	Exiv2::Value::AutoPtr v = Exiv2::Value::create(Exiv2::xmpSeq);
-#endif
+	auto v = Exiv2::Value::create(Exiv2::xmpSeq);
 	for (const auto& s : items) v->read(s);   // each read() appends one item
 	xmp.add(Exiv2::XmpKey(key), v.get());
 }
